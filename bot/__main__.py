@@ -189,7 +189,7 @@ botcmds = [
     (f"{BotCommands.MirrorCommand}", "Start mirroring"),
     (f"{BotCommands.QbMirrorCommand}", "Start mirroring Qbit"),
     (f"{BotCommands.LeechCommand}", "Start Leeching"),
-    (f"{BotCommands.QBLeechCommand}", "Start Leeching With Qbit")
+    (f"{BotCommands.QbLeechCommand}", "Start Leeching With Qbit"),
     (f"{BotCommands.UnzipLeechCommand}", "Extract files(Leech)"),
     (f"{BotCommands.QbUnzipLeechCommand}", "Extract files(Leech+Qbit)"),
     (f"{BotCommands.LeechWatchCommand}", "Mirror Youtube-dl support link(Leech)"),
