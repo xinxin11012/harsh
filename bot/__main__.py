@@ -116,7 +116,7 @@ def bot_help(update, context):
 <br><br>
 <b>/{BotCommands.QbUnzipMirrorCommand}</b> [magnet_link][torrent_file][torrent_file_url]: Start mirroring using qBittorrent and upload the file/folder extracted from any archive extension
 <br><br>
-<b>/{BotCommands.LeechCommand}</b> [download_url][magnet_link]: Start leeching to Telegram, Use <b>/{BotCommands.LeechCommand} s</b> to select files before leeching
+<b>/{BotCommands.LeechCommand}</b> [download_url][magnet_link]: Start leeching to Telegram
 <br><br>
 <b>/{BotCommands.ZipLeechCommand}</b> [download_url][magnet_link]: Start leeching to Telegram and upload the file/folder compressed with zip extension
 <br><br>
@@ -189,6 +189,7 @@ botcmds = [
     (f"{BotCommands.MirrorCommand}", "Start mirroring"),
     (f"{BotCommands.QbMirrorCommand}", "Start mirroring Qbit"),
     (f"{BotCommands.LeechCommand}", "Start Leeching"),
+    (f"{BotCommands.QBLeechCommand}", "Start Leeching With Qbit")
     (f"{BotCommands.UnzipLeechCommand}", "Extract files(Leech)"),
     (f"{BotCommands.QbUnzipLeechCommand}", "Extract files(Leech+Qbit)"),
     (f"{BotCommands.LeechWatchCommand}", "Mirror Youtube-dl support link(Leech)"),
