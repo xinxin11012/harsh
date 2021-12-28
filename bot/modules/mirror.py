@@ -219,6 +219,20 @@ class MirrorListener(listeners.MirrorListeners):
     
     def onUploadComplete(self, link: str, size, files, folders, typ):
         if self.isLeech:
+            if self.isQbit and QB_SEED:
+                pass
+            else:
+                with download_dict_lock:
+                    try:
+                        fs_utils.clean_download(download_dict[self.uid].path())
+                    except FileNotFoundError:
+                        pass
+                    del download_dict[self.uid]
+                    dcount = len(download_dict)
+                if dcount == 0:
+                    self.clean()
+                else:
+                    update_all_messages()
             if self.message.from_user.username:
                 uname = f"@{self.message.from_user.username}"
             else:
@@ -252,21 +266,7 @@ class MirrorListener(listeners.MirrorListeners):
                         bot.sendMessage(chat_id=i, text=msg1, parse_mode=ParseMode.HTML)
                 except Exception as e:
                     LOGGER.warning(e)                                           
-            if self.isQbit and QB_SEED:
-                return
-            else:
-                with download_dict_lock:
-                    try:
-                        fs_utils.clean_download(download_dict[self.uid].path())
-                    except FileNotFoundError:
-                        pass
-                    del download_dict[self.uid]
-                    count = len(download_dict)
-                if count == 0:
-                    self.clean()
-                else:
-                    update_all_messages()
-                return
+            return
         with download_dict_lock:
             msg = f"<b>Filename : </b><code>{download_dict[self.uid].name()}</code>\n<b>Size : </b><code>{size}</code>"
             buttons = button_build.ButtonMaker()
@@ -320,20 +320,24 @@ class MirrorListener(listeners.MirrorListeners):
                             msg1 += f'<b>By: </b>{uname}\n'
                             bot.sendMessage(chat_id=i, text=msg1, reply_markup=InlineKeyboardMarkup(buttons.build_menu(2)), parse_mode=ParseMode.HTML)
                     except Exception as e:
-                        LOGGER.warning(e)                                           
-            try:
-                fs_utils.clean_download(download_dict[self.uid].path())
-            except FileNotFoundError:
-                pass
-            del download_dict[self.uid]
-            count = len(download_dict)
-        sendMarkup(
-            msg, self.bot, self.update, InlineKeyboardMarkup(buttons.build_menu(2))
-        )
-        if count == 0:
-            self.clean()
-        else:
-            update_all_messages()
+                        LOGGER.warning(e) 
+        if self.isQbit and QB_SEED:
+            return sendMarkup(msg, self.bot, self.update, InlineKeyboardMarkup(buttons.build_menu(2)))
+        else: 
+            with download_dict_lock:                                        
+                try:
+                    fs_utils.clean_download(download_dict[self.uid].path())
+                except FileNotFoundError:
+                    pass
+                del download_dict[self.uid]
+                count = len(download_dict)
+            sendMarkup(
+                msg, self.bot, self.update, InlineKeyboardMarkup(buttons.build_menu(2))
+            )
+            if count == 0:
+                self.clean()
+            else:
+                update_all_messages()
 
     def onUploadError(self, error):
         e_str = error.replace("<", "").replace(">", "")
