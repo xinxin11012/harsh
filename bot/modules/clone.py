@@ -33,8 +33,10 @@ def cloneNode(update, context):
             deleteMessage(context.bot, msg)
             return sendMessage(str(e), context.bot, update)
     if is_gdrive_link(link):
+        msg = sendMessage(f"Checking Drive Link...", context.bot, update)
         gd = gdriveTools.GoogleDriveHelper()
         res, size, name, files = gd.clonehelper(link)
+        deleteMessage(context.bot, msg)
         if res != "":
             sendMessage(res, context.bot, update)
             return
