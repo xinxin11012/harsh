@@ -25,13 +25,6 @@ read update
 if  ! [ "$update" == "2" ]
 then 
 echo "Hosting A New Bot"
-echo "Have You Filled Config.env? Type Y OR N."
-read config
-if ! ( [ $config == "Y" ] || [ $config == "y" ] )
-then  
-    echo "Fill Config First"
-    exit
-fi  
 if ! [ -f config.env ]
 then 
     echo "Config Not Found" 
@@ -44,8 +37,25 @@ echo -e "Dont Enter Anything For Random App Name.(Just Press Enter And Leave It 
 read name
 name="${name:=$appname}"
 appname=$name
+clear
+echo -e "Choose The Server Region\n"
+echo -e "Enter 1 For US\nEnter 2 For EU\n\nJust Press Enter For US Region(Default)"
+read region
+region="${region:=1}"
+if [ $region == 1 ]
+then
+region=us
+elif [ $region == 2 ]
+then
+region=eu
+else
+echo -e "Wrong Input Detected"
+echo -e "US Server Is Selected"
+region=us
+fi
 echo "Using $appname As Name."
-heroku create $appname
+echo "Using $region As Region For The Bot."
+heroku create --region $region $appname
 heroku git:remote -a $appname
 heroku stack:set container -a $appname
 echo "Done"
@@ -63,9 +73,10 @@ then
     git commit -m "changes"
     git push heroku qbit:master --force
 fi
+clear
 echo "Avoiding suspension."
 heroku apps:destroy --confirm $appname
-heroku create $appname
+heroku create --region $region $appname
 heroku config:set BASE_URL_OF_BOT=https://"$appname".herokuapp.com
 heroku git:remote -a $appname
 heroku stack:set container -a $appname
@@ -77,17 +88,15 @@ then
     git add -f token.pickle config.env drive_folder
     git commit -m "changes"
     git push heroku qbit:master --force
-    heroku ps:scale web=0 -a $appname
-    heroku ps:scale web=1 -a $appname
     else
     echo "Pushing Accounts Folder Too"
     git add .
     git add -f token.pickle config.env drive_folder accounts accounts/*
     git commit -m "changes"
-    git push heroku qbit:master
-    heroku ps:scale web=0 -a $appname
-    heroku ps:scale web=1 -a $appname
+    git push heroku qbit:master --force
 fi
+heroku ps:scale web=0 -a $appname
+heroku ps:scale web=1 -a $appname
 echo "Enjoy"
 else 
 echo "Updating Bot."
@@ -102,8 +111,8 @@ git add -f token.pickle config.env drive_folder
 git commit -m "changes"
 git push heroku qbit:master --force
 fi
+fi
 echo "Done"
 echo "Type"
 echo "heroku logs -t"
 echo "To Check Bot Logs Here."
-fi
